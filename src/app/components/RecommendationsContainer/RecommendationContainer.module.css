@@ -1,0 +1,16 @@
+.trackNameData {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.trackNameData:hover {
+  background-color: rgba(186, 255, 186, 0.44);
+}
+
+.image {
+  border-radius: 10px;
+}

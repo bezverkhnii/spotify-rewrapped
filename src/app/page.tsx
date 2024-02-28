@@ -1,95 +1,153 @@
+"use client";
 import Image from "next/image";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Code,
+  Flex,
+  Heading,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { redirectToAuthCodeFlow } from "./auth/redirectToAuthCodeFlow";
+import { getAccessToken } from "./auth/getAccessToken";
+import { fetchProfile } from "./auth/fetchProfile";
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
+import { getTopItems } from "./utils/getTopItems";
+import Card from "./components/Card/Card";
+import { getRecommendations } from "./utils/getRecommendations";
+import Link from "next/link";
+import RecommendationTrack from "./components/RecommendationTrack/RecommendationTrack";
+import { motion } from "framer-motion";
+import RecommendationsContainer from "./components/RecommendationsContainer/RecommendationsContainer";
+import TopArtistsContainer from "./components/RecommendationTrack/RecommendationTrack";
 
 export default function Home() {
+  const [profile, setProfile] = useState();
+  const [topArtists, setTopArtists] = useState();
+  const [recommendations, setRecommendations] = useState();
+  const clientId = "a2560c35564942a5b8ae74f3e717b2ec";
+  const params = useSearchParams();
+  const code = params.get("code");
+
+  const handleLogin = async () => {
+    if (!code) {
+      redirectToAuthCodeFlow(clientId);
+    } else {
+      const accessToken = await getAccessToken(clientId, code);
+      localStorage.setItem("accessToken", accessToken);
+      const fetchedProfile = await fetchProfile(accessToken);
+      setProfile(fetchedProfile);
+      console.log(fetchedProfile);
+    }
+  };
+
+  const getTopArtists = async () => {
+    const artists = await getTopItems(localStorage.getItem("accessToken"));
+    setTopArtists(artists.items);
+  };
+
+  const getRecommendationsBasedOnUsersTop = async () => {
+    let recommendationsArray;
+    if (topArtists) {
+      recommendationsArray = await getRecommendations(topArtists);
+    } else {
+      const usersTop = await getTopItems(localStorage.getItem("accessToken"));
+      const usersTopArtists = usersTop.items;
+      recommendationsArray = await getRecommendations(usersTopArtists);
+    }
+    setRecommendations(recommendationsArray.tracks);
+  };
+  if (recommendations) {
+    console.log(recommendations);
+  }
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
+    <div className={styles.container}>
+      {profile ? (
+        <div className="">
+          <Heading>recsify</Heading>
+          <div className={styles.profileSection}>
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+              src={profile.images[1].url}
+              alt={profile.display_name}
+              width={profile.images[1].width}
+              height={profile.images[1].height}
+              className={styles.image}
             />
-          </a>
+            <div className={styles.profileMain}>
+              <div>
+                <Heading>{profile.display_name}</Heading>
+                <Badge colorScheme="green">{profile.product}</Badge>
+              </div>
+              <div className="">
+                <Text>
+                  Lets find some new stuff you should immediately listen to.
+                </Text>
+                <Text>
+                  Find yout new favourites and listen them right in yout Spotify
+                  application.
+                </Text>
+              </div>
+              <Button
+                colorScheme="whatsapp"
+                onClick={getRecommendationsBasedOnUsersTop}
+              >
+                Only for you
+              </Button>
+              <Button
+                colorScheme="whatsapp"
+                onClick={getTopArtists}
+                variant="outline"
+              >
+                Wanna wrap up your top artists?
+              </Button>
+            </div>
+            {/* {topArtists && <TopArtistsContainer artists={topArtists} />} */}
+          </div>
+          {/* <Flex>
+            <Avatar src={profile.images[1].url} />
+            <Box ml="3">
+              <Text fontWeight="bold">
+                {profile.display_name}
+                <Badge ml="1" colorScheme="green">
+                  {profile.product}
+                </Badge>
+              </Text>
+              <Text fontSize="sm">
+                {profile.type.charAt(0).toUpperCase() + profile.type.slice(1)}
+              </Text>
+            </Box>
+          </Flex> */}
+          {/* <button onClick={getTopArtists}>Get top</button> */}
+          {/* <button onClick={getRecommendationsBasedOnUsersTop}>Get recs</button> */}
+          {/* {topArtists && (
+            <div className={styles.topArtists}>
+              {topArtists.map((artist) => (
+                <div key={artist.id}>
+                  <Card
+                    image={artist.images[1].url}
+                    name={artist.name}
+                    link={artist.uri}
+                  />
+                </div>
+              ))}
+            </div>
+          )} */}
+          <div style={{ marginTop: 20 }}>
+            {recommendations && (
+              <RecommendationsContainer recommendations={recommendations} />
+            )}
+          </div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      ) : (
+        <Button colorScheme="teal" size="lg" onClick={handleLogin}>
+          Login
+        </Button>
+      )}
+    </div>
   );
 }
