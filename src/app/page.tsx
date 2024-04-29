@@ -25,6 +25,7 @@ import RecommendationTrack from "./components/RecommendationTrack/Recommendation
 import { motion } from "framer-motion";
 import RecommendationsContainer from "./components/RecommendationsContainer/RecommendationsContainer";
 import TopArtistsContainer from "./components/RecommendationTrack/RecommendationTrack";
+import BlurLight from "./components/BlurLight/BlurLight";
 
 export default function Home() {
   const [profile, setProfile] = useState();
@@ -148,6 +149,8 @@ export default function Home() {
           Login
         </Button>
       )}
+      <BlurLight left={-200} bottom={0} />
+      <BlurLight right={-100} top={0} />
     </div>
   );
 }

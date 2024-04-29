@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  position: absolute;
+  border-radius: 50%;
+  height: 500px;
+  width: 500px;
+  background-color: rgb(94, 242, 83);
+  filter: blur(100px);
+  z-index: -1;
+}
