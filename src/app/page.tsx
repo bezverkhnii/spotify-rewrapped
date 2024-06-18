@@ -18,13 +18,8 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 import { getTopItems } from "./utils/getTopItems";
-import Card from "./components/Card/Card";
 import { getRecommendations } from "./utils/getRecommendations";
-import Link from "next/link";
-import RecommendationTrack from "./components/RecommendationTrack/RecommendationTrack";
-import { motion } from "framer-motion";
 import RecommendationsContainer from "./components/RecommendationsContainer/RecommendationsContainer";
-import TopArtistsContainer from "./components/RecommendationTrack/RecommendationTrack";
 import BlurLight from "./components/BlurLight/BlurLight";
 
 export default function Home() {
@@ -48,7 +43,7 @@ export default function Home() {
   };
 
   const getTopArtists = async () => {
-    const artists = await getTopItems(localStorage.getItem("accessToken"));
+    const artists = await getTopItems(localStorage.getItem("accessToken")!);
     setTopArtists(artists.items);
   };
 
@@ -57,7 +52,7 @@ export default function Home() {
     if (topArtists) {
       recommendationsArray = await getRecommendations(topArtists);
     } else {
-      const usersTop = await getTopItems(localStorage.getItem("accessToken"));
+      const usersTop = await getTopItems(localStorage.getItem("accessToken")!);
       const usersTopArtists = usersTop.items;
       recommendationsArray = await getRecommendations(usersTopArtists);
     }
