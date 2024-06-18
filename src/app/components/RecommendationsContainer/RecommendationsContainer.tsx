@@ -37,8 +37,11 @@ const item = {
   },
 };
 
-const RecommendationsContainer = ({ recommendations }) => {
-  console.log(recommendations);
+const RecommendationsContainer = ({
+  recommendations,
+}: {
+  recommendations: any;
+}) => {
   return (
     <motion.div variants={container} initial="hidden" animate="visible">
       <TableContainer className={styles.container}>
@@ -52,7 +55,7 @@ const RecommendationsContainer = ({ recommendations }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {recommendations.map((track) => (
+            {recommendations.map((track: any) => (
               <motion.tr
                 variants={item}
                 key={track.id}
@@ -73,7 +76,7 @@ const RecommendationsContainer = ({ recommendations }) => {
                   </Link>
                 </Td>
                 <Td>
-                  {track.artists.map((artist) => (
+                  {track.artists.map((artist: any) => (
                     <span key={artist.id}>{artist.name}</span>
                   ))}
                 </Td>

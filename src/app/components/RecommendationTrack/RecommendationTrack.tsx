@@ -25,7 +25,7 @@ const item = {
   },
 };
 
-const TopArtistsContainer = ({ artists }) => {
+const TopArtistsContainer = ({ artists }: { artists: any }) => {
   console.log(artists);
   return (
     <motion.ul
@@ -34,7 +34,7 @@ const TopArtistsContainer = ({ artists }) => {
       initial="hidden"
       animate="visible"
     >
-      {artists.map((artist) => (
+      {artists.map((artist: any) => (
         <motion.li key={artist.id} className={styles.item} variants={item}>
           <Image
             src={artist.images[1].url}
