@@ -23,7 +23,7 @@ import RecommendationsContainer from "./components/RecommendationsContainer/Reco
 import BlurLight from "./components/BlurLight/BlurLight";
 
 export default function Home() {
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState<any>();
   const [topArtists, setTopArtists] = useState();
   const [recommendations, setRecommendations] = useState();
   const clientId = "a2560c35564942a5b8ae74f3e717b2ec";

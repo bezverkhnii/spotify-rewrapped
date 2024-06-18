@@ -1,7 +1,5 @@
-import { genres } from "../constants";
-
-export const getRecommendations = async (usersTopArtists) => {
-  const seeds = usersTopArtists.map((artist) => artist.id).join(",");
+export const getRecommendations = async (usersTopArtists: any) => {
+  const seeds = usersTopArtists.map((artist: any) => artist.id).join(",");
   try {
     const response = await fetch(
       `https://api.spotify.com/v1/recommendations?seed_artists=${seeds}&limit=10`,
