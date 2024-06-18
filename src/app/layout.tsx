@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { fonts } from "./fonts";
 import { Provider } from "react-redux";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={fonts.rubik.variable}>
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Providers>{children}</Providers>
+        </Suspense>
       </body>
     </html>
   );
